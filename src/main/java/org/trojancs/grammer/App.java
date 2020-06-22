@@ -1,6 +1,7 @@
 package org.trojancs.grammer;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,6 +24,8 @@ public class App extends Application {
         stage.setScene(scene);
         stage.setMinHeight(680);
         stage.setMinWidth(1350);
+        stage.setOnCloseRequest(e -> Platform.exit());
+
         stage.show();
     }
 
