@@ -1,5 +1,6 @@
 package org.trojancs.grammer;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
@@ -22,6 +23,7 @@ import java.io.File;
 
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.WindowEvent;
 import org.trojancs.grammer.Post;
 
 public class PrimaryController {
@@ -117,7 +119,12 @@ public class PrimaryController {
 
     @FXML
     public void handleClose(ActionEvent event) {
-        System.exit(0);
+        menuBar.getScene().getWindow().fireEvent(
+                new WindowEvent(
+                        menuBar.getScene().getWindow(),
+                        WindowEvent.WINDOW_CLOSE_REQUEST
+                )
+        );
     }
 
     @FXML
