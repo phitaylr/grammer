@@ -2,19 +2,16 @@ package org.trojancs.grammer;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.image.Image;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.MenuBar;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
@@ -44,6 +41,9 @@ public class PrimaryController {
 
     @FXML
     private ColorPicker bgColorChooser;
+
+    @FXML
+    private Label leftButton, rightButton;
 
     @FXML
     private void initialize() {
@@ -95,20 +95,71 @@ public class PrimaryController {
         };
         aspectRatioChoiceBox.setOnAction(aspectRatioCBevent);
 
+        // init arrow labels to invisible
+        leftButton.setVisible(false);
+        rightButton.setVisible(false);
+
+        EventHandler<MouseEvent> turnLeftEvent = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                turnPage(-1);
+            }
+        };
+        leftButton.setOnMouseClicked(turnLeftEvent);
+
+        EventHandler<MouseEvent> turnRightEvent = new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                turnPage(1);
+            }
+        };
+        rightButton.setOnMouseClicked(turnRightEvent);
+
     }
 
     @FXML
     void handleKeyPress(KeyEvent e) {
 
+
+            if (e.getCode() == KeyCode.LEFT ) {
+                turnPage(-1);
+            }
+            else if (e.getCode() == KeyCode.RIGHT ) {
+                turnPage(1);
+            }
+
+
+    }
+
+    void turnPage(int dir){
         if (post != null) {
-            if (e.getCode() == KeyCode.LEFT && panelNumber > 0) {
+            if (dir < 0 && panelNumber > 0) {
                 panelNumber--;
-            } else if (e.getCode() == KeyCode.RIGHT && panelNumber < post.getPanelsN() - 1) {
+            } else if (dir > 0 && panelNumber < post.getPanelsN() - 1) {
                 panelNumber++;
             }
+
+
             updatePanel(false);
         }
+        updateArrows();
+    }
 
+    void updateArrows(){
+        if(post.getPanelsN()>1) {
+            if (panelNumber > 0)
+                leftButton.setVisible(true);
+            else
+                leftButton.setVisible(false);
+            if (panelNumber < post.getPanelsN() - 1)
+                rightButton.setVisible(true);
+            else
+                rightButton.setVisible(false);
+
+        }else{
+            leftButton.setVisible(false);
+            rightButton.setVisible(false);
+        }
     }
 
     // MENU
@@ -182,8 +233,11 @@ public class PrimaryController {
                 post.setAspectRatio(Post.RATIO_LANDSCAPE);
             }
 
+
             updatePanel();
         }
+       updateArrows();
+
     }
 
     @FXML
